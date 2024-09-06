@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        SONAR_TOKEN = credentials('sonarqube-auth-token')
+        SONAR_TOKEN = credentials('sonarqube-auth-token') // Use Jenkins credentials plugin to inject the token
     }
 
     stages {
@@ -23,8 +23,8 @@ pipeline {
         stage('Run Unit Tests') {
             agent {
                 docker {
-                    image 'maven:3.8.7-openjdk-18'
-                    args '-v /root/.m2:/root/.m2'
+                    image 'maven:3.8.7-openjdk-18' // Use the specified Maven image
+                    args '-v /root/.m2:/root/.m2' // Mount local Maven repository
                 }
             }
             steps {
@@ -40,13 +40,16 @@ pipeline {
             environment {
                 CI = 'true'
                 scannerHome = '/opt/sonar-scanner'
+                SONAR_SCANNER_CACHE = '/tmp/sonar-scanner-cache' // Use a different writable directory
             }
             steps {
                 withSonarQubeEnv('Sonar') {
                     sh """
+                    mkdir -p ${SONAR_SCANNER_CACHE}
                     ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.projectKey=CI-CD-project \
                         -Dsonar.login=${SONAR_TOKEN} \
+                        -Dsonar.cache.directory=${SONAR_SCANNER_CACHE} \
                         -X
                     """
                 }
