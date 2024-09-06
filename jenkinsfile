@@ -1,9 +1,9 @@
 pipeline {
     agent any
     environment {
-        SONAR_TOKEN = 'sqa_44bac6c8b095248814d694797ead9f1246e62321'
-        SONARQUBE_URL = 'https://sonarqube.devopseasylearning.uk/'
+        SONAR_TOKEN = credentials('sonarqube-auth-token') // Use Jenkins credentials plugin to inject the token
     }
+
     stages {
         stage('Check Docker Version') {
             steps {
@@ -34,19 +34,28 @@ pipeline {
         stage('SonarQube Analysis') {
             agent {
                 docker {
-                    image 'maven:3.8.7-openjdk-18' // Use the same image for SonarQube analysis
-                    args '-v /root/.m2:/root/.m2' // Mount local Maven repository
+                    image 'sonarsource/sonar-scanner-cli:4.7.0'
                 }
             }
+            environment {
+                CI = 'true'
+                scannerHome = '/opt/sonar-scanner'
+            }
             steps {
-                withSonarQubeEnv('SonarQube') { // Ensure SonarQube server is configured in Jenkins
+                withSonarQubeEnv('Sonar') {
                     sh """
-                    mvn sonar:sonar \
-                        -Dsonar.projectKey=CI-CD-project \
-                        -Dsonar.host.url=${SONARQUBE_URL} \
+                    ${scannerHome}/bin/sonar-scanner \
                         -Dsonar.login=${SONAR_TOKEN}
                     """
                 }
+            }
+        }
+        stage('Hello') {
+            steps {
+                sh '''
+                ls 
+                pwd
+                '''
             }
         }
     }
