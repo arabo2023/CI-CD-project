@@ -1,0 +1,15 @@
+pipeline {
+    agent any
+    stages {
+        stage('Cloning Repo') {
+            steps {
+                checkout([$class: 'GitSCM', branches: [[name: '*/main']], 
+                          doGenerateSubmoduleConfigurations: false, 
+                          extensions: [], 
+                          submoduleCfg: [], 
+                          userRemoteConfigs: [[credentialsId: 'a1djafar-github-token', 
+                                               url: 'https://github.com/arabo2023/CI-CD-project.git']]])
+            }
+        }
+    }
+}
