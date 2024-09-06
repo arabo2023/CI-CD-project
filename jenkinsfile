@@ -45,6 +45,7 @@ pipeline {
                 withSonarQubeEnv('Sonar') {
                     sh """
                     ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=CI-CD-project \
                         -Dsonar.login=${SONAR_TOKEN}
                     """
                 }
