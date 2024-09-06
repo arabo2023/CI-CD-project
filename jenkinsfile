@@ -5,6 +5,11 @@ pipeline {
         SONARQUBE_URL = 'https://sonarqube.devopseasylearning.uk/'
     }
     stages {
+        stage('Check Docker Version') {
+            steps {
+                sh 'docker --version'
+            }
+        }
         stage('Cloning Repo') {
             steps {
                 checkout([$class: 'GitSCM', branches: [[name: '*/main']], 
