@@ -18,7 +18,7 @@ pipeline {
         stage('Run Unit Tests') {
             agent {
                 docker {
-                    image 'maven:3.8.1-jdk-11'
+                    image 'maven:3.8.7-eclipse-temurin-11' // Use a different, valid Maven image
                     args '-v /root/.m2:/root/.m2' // Mount local Maven repository
                 }
             }
@@ -29,7 +29,7 @@ pipeline {
         stage('SonarQube Analysis') {
             agent {
                 docker {
-                    image 'maven:3.8.1-jdk-11'
+                    image 'maven:3.8.7-eclipse-temurin-11' // Use a different, valid Maven image
                     args '-v /root/.m2:/root/.m2' // Mount local Maven repository
                 }
             }
