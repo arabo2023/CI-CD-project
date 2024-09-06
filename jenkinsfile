@@ -34,17 +34,16 @@ pipeline {
         stage('SonarQube Analysis') {
             agent {
                 docker {
-                    image 'openjdk:17-jdk' // Use a Docker image with Java 17
+                    image 'sonarsource/sonar-scanner-cli:11.0' // Use the specified SonarQube Scanner image
                 }
             }
             environment {
                 CI = 'true'
-                scannerHome = '/opt/sonar-scanner'
             }
             steps {
                 withSonarQubeEnv('Sonar') {
                     sh """
-                    ${scannerHome}/bin/sonar-scanner \
+                    sonar-scanner \
                         -Dsonar.login=${SONAR_TOKEN}
                     """
                 }
