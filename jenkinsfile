@@ -18,7 +18,7 @@ pipeline {
         stage('Run Unit Tests') {
             agent {
                 docker {
-                    image 'maven:3.8.7-eclipse-temurin-18' // Use the Eclipse Temurin JDK 18 image
+                    image 'maven:3.8.7-openjdk-18' // Use the specified Maven image
                     args '-v /root/.m2:/root/.m2' // Mount local Maven repository
                 }
             }
@@ -29,7 +29,7 @@ pipeline {
         stage('SonarQube Analysis') {
             agent {
                 docker {
-                    image 'maven:3.8.7-eclipse-temurin-18' // Use the same Docker image for SonarQube analysis
+                    image 'maven:3.8.7-openjdk-18' // Use the same image for SonarQube analysis
                     args '-v /root/.m2:/root/.m2' // Mount local Maven repository
                 }
             }
