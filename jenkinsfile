@@ -35,11 +35,11 @@ pipeline {
             agent {
                 docker {
                     image 'sonarsource/sonar-scanner-cli:11.0' // Use the specified SonarQube Scanner image
-                    args '--user root' // Run as root to avoid permission issues
                 }
             }
             environment {
                 CI = 'true'
+                SONAR_SCANNER_OPTS = '-Dsonar.cache.location=/tmp/.sonar' // Set custom cache directory
             }
             steps {
                 withSonarQubeEnv('Sonar') {
