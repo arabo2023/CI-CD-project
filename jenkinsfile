@@ -1,5 +1,9 @@
 pipeline {
     agent any
+    environment {
+        SONAR_TOKEN = 'sqa_44bac6c8b095248814d694797ead9f1246e62321'
+        SONARQUBE_URL = 'https://sonarqube.devopseasylearning.uk/'
+    }
     stages {
         stage('Cloning Repo') {
             steps {
@@ -15,12 +19,35 @@ pipeline {
             agent {
                 docker {
                     image 'maven:3.8.1-jdk-11'
-                    args '-v /root/.m2:/root/.m2' // Mount local Maven repository to avoid re-downloading dependencies
+                    args '-v /root/.m2:/root/.m2' // Mount local Maven repository
                 }
             }
             steps {
                 sh 'mvn clean test'
             }
+        }
+        stage('SonarQube Analysis') {
+            agent {
+                docker {
+                    image 'maven:3.8.1-jdk-11'
+                    args '-v /root/.m2:/root/.m2' // Mount local Maven repository
+                }
+            }
+            steps {
+                withSonarQubeEnv('SonarQube') { // Ensure SonarQube server is configured in Jenkins
+                    sh """
+                    mvn sonar:sonar \
+                        -Dsonar.projectKey=CI-CD-project \
+                        -Dsonar.host.url=${SONARQUBE_URL} \
+                        -Dsonar.login=${SONAR_TOKEN}
+                    """
+                }
+            }
+        }
+    }
+    post {
+        always {
+            echo 'Pipeline completed'
         }
     }
 }
