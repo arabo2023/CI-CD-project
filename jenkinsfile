@@ -34,7 +34,7 @@ pipeline {
         stage('SonarQube Analysis') {
             agent {
                 docker {
-                    image 'chainguard/sonar-scanner-cli:sha256-974eb07422d0abf59c5cc9a72455c95c38d95cc532ac4d35e8756d6804171de7.sig' // Updated Docker image
+                    image 'sonarsource/sonar-scanner-cli:11.0' // Updated Docker image
                 }
             }
             environment {
